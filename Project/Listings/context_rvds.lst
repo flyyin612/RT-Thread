@@ -58,292 +58,313 @@ ARM Macro Assembler    Page 1
    28 00000000                 PRESERVE8
    29 00000000         
    30 00000000         ;/*
-   31 00000000         ; *-----------------------------------------------------
-                       -------------------------------
-   32 00000000         ; *º¯ÊýÔ­ÐÍ:void rt_hw_context_switch_to(rt_uint32 to);
-   33 00000000         ; *r0 --> to
-   34 00000000         ; *¸Ãº¯ÊýÓÃÓÚ¿ªÆôµÚÒ»´ÎÏß³ÌÇÐ»»
+   31 00000000         ; *rt_base_t rt_hw_interrupt_disable();
+   32 00000000         ; */
+   33 00000000         rt_hw_interrupt_disable
+                               PROC
+   34 00000000                 EXPORT           rt_hw_interrupt_disable
 
 
 
 ARM Macro Assembler    Page 2 
 
 
-   35 00000000         ; *-----------------------------------------------------
-                       -------------------------------
-   36 00000000         ; */
-   37 00000000         
-   38 00000000         rt_hw_context_switch_to
+   35 00000000 F3EF 8010       MRS              r0, PRIMASK
+   36 00000004 B672            CPSID            I
+   37 00000006 4770            BX               LR
+   38 00000008                 ENDP
+   39 00000008         
+   40 00000008         ;/*
+   41 00000008         ; *void rt_hw_interrupt_enable(rt_base_t level);
+   42 00000008         ; */
+   43 00000008         rt_hw_interrupt_enable
                                PROC
-   39 00000000         
-   40 00000000         ;µ¼³ört_hw_context_switch_to,ÈÃÆä¾ßÓÐÈ«¾ÖÊôÐÔ£¬¿ÉÒÔÔÚCÎÄ
+   44 00000008                 EXPORT           rt_hw_interrupt_enable
+   45 00000008 F380 8810       MSR              PRIMASK, r0
+   46 0000000C 4770            BX               LR
+   47 0000000E                 ENDP
+   48 0000000E         
+   49 0000000E         ;/*
+   50 0000000E         ; *-----------------------------------------------------
+                       -------------------------------
+   51 0000000E         ; *º¯ÊýÔ­ÐÍ:void rt_hw_context_switch_to(rt_uint32 to);
+   52 0000000E         ; *r0 --> to
+   53 0000000E         ; *¸Ãº¯ÊýÓÃÓÚ¿ªÆôµÚÒ»´ÎÏß³ÌÇÐ»»
+   54 0000000E         ; *-----------------------------------------------------
+                       -------------------------------
+   55 0000000E         ; */
+   56 0000000E         
+   57 0000000E         rt_hw_context_switch_to
+                               PROC
+   58 0000000E         
+   59 0000000E         ;µ¼³ört_hw_context_switch_to,ÈÃÆä¾ßÓÐÈ«¾ÖÊôÐÔ£¬¿ÉÒÔÔÚCÎÄ
                        ¼þµ÷ÓÃ
-   41 00000000                 EXPORT           rt_hw_context_switch_to
-   42 00000000         
-   43 00000000         ;ÉèÖÃrt_interrupt_to_threadµÄÖµ
-   44 00000000 4923            LDR              r1, =rt_interrupt_to_thread ;½«
+   60 0000000E                 EXPORT           rt_hw_context_switch_to
+   61 0000000E         
+   62 0000000E         ;ÉèÖÃrt_interrupt_to_threadµÄÖµ
+   63 0000000E 4924            LDR              r1, =rt_interrupt_to_thread ;½«
                                                             rt_interrupt_to_thr
                                                             eadµÄµØÖ·¼ÓÔØµ½r1
-   45 00000002 6008            STR              r0, [r1]    ;½«r0µÄÖµ´æ´¢µ½rt_i
+   64 00000010 6008            STR              r0, [r1]    ;½«r0µÄÖµ´æ´¢µ½rt_i
                                                             nterrupt_to_thread
-   46 00000004         
-   47 00000004         ;ÉèÖÃrt_interrupt_from_threadµÄÖµÎª0£¬±íÊ¾Æô¶¯µÚÒ»´ÎÏß³Ì
+   65 00000012         
+   66 00000012         ;ÉèÖÃrt_interrupt_from_threadµÄÖµÎª0£¬±íÊ¾Æô¶¯µÚÒ»´ÎÏß³Ì
                        ÇÐ»»
-   48 00000004 4923            LDR              r1, =rt_interrupt_from_thread ;
+   67 00000012 4924            LDR              r1, =rt_interrupt_from_thread ;
                                                             ½«rt_interrupt_from
                                                             _threadµÄµØÖ·¼ÓÔØµ½
                                                             r1
-   49 00000006 F04F 0000       MOV              r0, #0x0    ;ÅäÖÃr0µÈÓÚ0
-   50 0000000A 6008            STR              r0, [r1]    ;½«r0µÄÖµ´æ´¢µ½rt_t
+   68 00000014 F04F 0000       MOV              r0, #0x0    ;ÅäÖÃr0µÈÓÚ0
+   69 00000018 6008            STR              r0, [r1]    ;½«r0µÄÖµ´æ´¢µ½rt_t
                                                             hread_switch_interr
                                                             upt_flag
-   51 0000000C         
-   52 0000000C         ;ÉèÖÃÖÐ¶Ï±êÖ¾Î»rt_thread_switch_interrupt_flagµÄÖµÎª1
-   53 0000000C 4922            LDR              r1, =rt_thread_switch_interrupt
+   70 0000001A         
+   71 0000001A         ;ÉèÖÃÖÐ¶Ï±êÖ¾Î»rt_thread_switch_interrupt_flagµÄÖµÎª1
+   72 0000001A 4923            LDR              r1, =rt_thread_switch_interrupt
 _flag 
                                                             ;½«rt_thread_switch
                                                             _interrupt_flagµÄµØ
                                                             Ö·¼ÓÔØµ½r1
-   54 0000000E F04F 0001       MOV              r0, #1      ;ÅäÖÃr0µÈÓÚ1
-   55 00000012 6008            STR              r0, [r1]    ;½«r0µÄÖµ´æ´¢µ½rt_t
+   73 0000001C F04F 0001       MOV              r0, #1      ;ÅäÖÃr0µÈÓÚ1
+   74 00000020 6008            STR              r0, [r1]    ;½«r0µÄÖµ´æ´¢µ½rt_t
                                                             hread_switch_interr
-                                                            upt_flag
-   56 00000014         
-   57 00000014         ;ÉèÖÃPendSVÒì³£µÄÓÅÏÈ¼¶
-   58 00000014 4821            LDR              r0, =NVIC_SYSPRI2
-   59 00000016 F44F 017F       LDR              r1, =NVIC_PENDSV_PRI
-   60 0000001A F8D0 2000       LDR.W            r2, [r0,#0x00] ;¶Á
-   61 0000001E EA41 0102       ORR              r1,r1,r2    ;¸Ä
-   62 00000022 6001            STR              r1, [r0]    ;Ð´
-   63 00000024         
-   64 00000024         ;´¥·¢PendSVÒì³£(²úÉúÉÏÏÂÎÄÇÐ»»)
-   65 00000024 481E            LDR              r0, =NVIC_INT_CTRL
-   66 00000026 F04F 5180       LDR              r1, =NVIC_PENDSVSET
-   67 0000002A 6001            STR              r1, [r0]
-   68 0000002C         
-   69 0000002C         ;¿ªÖÐ¶Ï
-   70 0000002C B661            CPSIE            F
-   71 0000002E B662            CPSIE            I
-   72 00000030         
-   73 00000030         ;ÓÀÔ¶²»»áµ½´ïÕâÀï
-   74 00000030                 ENDP
-   75 00000030         
 
 
 
 ARM Macro Assembler    Page 3 
 
 
-   76 00000030         ;/*
-   77 00000030         ; *-----------------------------------------------------
+                                                            upt_flag
+   75 00000022         
+   76 00000022         ;ÉèÖÃPendSVÒì³£µÄÓÅÏÈ¼¶
+   77 00000022 4822            LDR              r0, =NVIC_SYSPRI2
+   78 00000024 F44F 017F       LDR              r1, =NVIC_PENDSV_PRI
+   79 00000028 F8D0 2000       LDR.W            r2, [r0,#0x00] ;¶Á
+   80 0000002C EA41 0102       ORR              r1,r1,r2    ;¸Ä
+   81 00000030 6001            STR              r1, [r0]    ;Ð´
+   82 00000032         
+   83 00000032         ;´¥·¢PendSVÒì³£(²úÉúÉÏÏÂÎÄÇÐ»»)
+   84 00000032 481F            LDR              r0, =NVIC_INT_CTRL
+   85 00000034 F04F 5180       LDR              r1, =NVIC_PENDSVSET
+   86 00000038 6001            STR              r1, [r0]
+   87 0000003A         
+   88 0000003A         ;¿ªÖÐ¶Ï
+   89 0000003A B661            CPSIE            F
+   90 0000003C B662            CPSIE            I
+   91 0000003E         
+   92 0000003E         ;ÓÀÔ¶²»»áµ½´ïÕâÀï
+   93 0000003E                 ENDP
+   94 0000003E         
+   95 0000003E         ;/*
+   96 0000003E         ; *-----------------------------------------------------
                        -------------------------------------------------
-   78 00000030         ; *void rt_hw_context_switch(rt_uint32 from, rt_uint32 t
+   97 0000003E         ; *void rt_hw_context_switch(rt_uint32 from, rt_uint32 t
                        o);
-   79 00000030         ; *r0 --> from
-   80 00000030         ; *r1 --> to
-   81 00000030         ; *-----------------------------------------------------
+   98 0000003E         ; *r0 --> from
+   99 0000003E         ; *r1 --> to
+  100 0000003E         ; *-----------------------------------------------------
                        --------------------------------------------------
-   82 00000030         ; */
-   83 00000030         ;rt_hw_context_switch_interrupt
-   84 00000030         ;EXPORT rt_hw_context_switch_interrupt
-   85 00000030         
-   86 00000030         rt_hw_context_switch
+  101 0000003E         ; */
+  102 0000003E         ;rt_hw_context_switch_interrupt
+  103 0000003E         ;EXPORT rt_hw_context_switch_interrupt
+  104 0000003E         
+  105 0000003E         rt_hw_context_switch
                                PROC
-   87 00000030                 EXPORT           rt_hw_context_switch
-   88 00000030         
-   89 00000030         ;ÉèÖÃÖÐ¶Ï±êÖ¾Î»rt_thread_switch_interrupt_flagÎª1
-   90 00000030 4A19            LDR              r2, =rt_thread_switch_interrupt
+  106 0000003E                 EXPORT           rt_hw_context_switch
+  107 0000003E         
+  108 0000003E         ;ÉèÖÃÖÐ¶Ï±êÖ¾Î»rt_thread_switch_interrupt_flagÎª1
+  109 0000003E 4A1A            LDR              r2, =rt_thread_switch_interrupt
 _flag 
                                                             ;¼ÓÔØrt_thread_swit
                                                             ch_interrupt_flagµÄ
                                                             µØÖ·µ½r2
-   91 00000032 6813            LDR              r3, [r2]    ;¼ÓÔØrt_thread_swit
+  110 00000040 6813            LDR              r3, [r2]    ;¼ÓÔØrt_thread_swit
                                                             ch_interrupt_flagµÄ
                                                             Öµµ½r3
-   92 00000034 2B01            CMP              r3, #1      ;r3Óë1±È½Ï£¬ÏàµÈÔòÖ
+  111 00000042 2B01            CMP              r3, #1      ;r3Óë1±È½Ï£¬ÏàµÈÔòÖ
                                                             ´ÐÐBEQÖ¸Áî£¬·ñÔò²»Ö
                                                             ´ÐÐ
-   93 00000036 D006            BEQ              _reswitch
-   94 00000038 F04F 0301       MOV              r3, #1      ;ÉèÖÃr3µÄÖµÎª1
-   95 0000003C 6013            STR              r3, [r2]    ;½«r3µÄÖµ´æ´¢µ½rt_t
+  112 00000044 D006            BEQ              _reswitch
+  113 00000046 F04F 0301       MOV              r3, #1      ;ÉèÖÃr3µÄÖµÎª1
+  114 0000004A 6013            STR              r3, [r2]    ;½«r3µÄÖµ´æ´¢µ½rt_t
                                                             hread_switch_interr
                                                             upt_flag,¼´ÖÃ1
-   96 0000003E         
-   97 0000003E         ;ÉèÖÃrt_interrupt_from_threadµÄÖµ
-   98 0000003E 4A15            LDR              r2, =rt_interrupt_from_thread ;
+  115 0000004C         
+  116 0000004C         ;ÉèÖÃrt_interrupt_from_threadµÄÖµ
+  117 0000004C 4A15            LDR              r2, =rt_interrupt_from_thread ;
                                                             ¼ÓÔØrt_interrupt_fr
-                                                            om_threadµÄµØÖ·µ½r2
-                                                            
-   99 00000040 6010            STR              r0, [r2]    ;´æ´¢r0µÄÖµµ½rt_int
-                                                            errupt_from_thread£
-                                                            ¬¼´ÉÏÒ»¸öÏß³ÌÕ»Ö¸Õë
-                                                            spµÄÖ¸Õë
-  100 00000042         
-  101 00000042         ;ÉèÖÃrt_interrupt_from_threadµÄÖµ
-  102 00000042 4A14            LDR              r2, =rt_interrupt_from_thread ;
-                                                            ¼ÓÔØrt_interrupt_fr
-                                                            om_threadµÄµØÖ·µ½r2
-                                                            
-  103 00000044 6010            STR              r0, [r2]    ;´æ´¢r0µÄÖµµ½rt_int
-                                                            errupt_from_thread£
-                                                            ¬¼´ÉÏÒ»¸öÏß³ÌÕ»Ö¸Õë
-                                                            spµÄÖ¸Õë
-  104 00000046         
-  105 00000046         _reswitch
-  106 00000046         ;ÉèÖÃrt_interrupt_to_threadµÄÖµ
-  107 00000046 4A12            LDR              r2, =rt_interrupt_to_thread ;¼Ó
-                                                            ÔØrt_interrupt_from
 
 
 
 ARM Macro Assembler    Page 4 
 
 
+                                                            om_threadµÄµØÖ·µ½r2
+                                                            
+  118 0000004E 6010            STR              r0, [r2]    ;´æ´¢r0µÄÖµµ½rt_int
+                                                            errupt_from_thread£
+                                                            ¬¼´ÉÏÒ»¸öÏß³ÌÕ»Ö¸Õë
+                                                            spµÄÖ¸Õë
+  119 00000050         
+  120 00000050         ;ÉèÖÃrt_interrupt_from_threadµÄÖµ
+  121 00000050 4A14            LDR              r2, =rt_interrupt_from_thread ;
+                                                            ¼ÓÔØrt_interrupt_fr
+                                                            om_threadµÄµØÖ·µ½r2
+                                                            
+  122 00000052 6010            STR              r0, [r2]    ;´æ´¢r0µÄÖµµ½rt_int
+                                                            errupt_from_thread£
+                                                            ¬¼´ÉÏÒ»¸öÏß³ÌÕ»Ö¸Õë
+                                                            spµÄÖ¸Õë
+  123 00000054         
+  124 00000054         _reswitch
+  125 00000054         ;ÉèÖÃrt_interrupt_to_threadµÄÖµ
+  126 00000054 4A12            LDR              r2, =rt_interrupt_to_thread ;¼Ó
+                                                            ÔØrt_interrupt_from
                                                             _threadµÄµØÖ·µ½r2
-  108 00000048 6011            STR              r1, [r2]    ;´æ´¢r1µÄÖµµ½rt_int
+  127 00000056 6011            STR              r1, [r2]    ;´æ´¢r1µÄÖµµ½rt_int
                                                             errupt_from_thread£
                                                             ¬¼´ÏÂÒ»¸öÏß³ÌÕ»Ö¸Õë
                                                             spµÄÖ¸Õë
-  109 0000004A         
-  110 0000004A         ;´¥·¢PendSVÒì³££¬ÊµÏÖÉÏÏÂÎÄÇÐ»»
-  111 0000004A 4815            LDR              r0, =NVIC_INT_CTRL
-  112 0000004C F04F 5180       LDR              r1, =NVIC_PENDSVSET
-  113 00000050 6001            STR              r1, [r0]
-  114 00000052         
-  115 00000052         ;×Ó³ÌÐò·µ»Ø
-  116 00000052 4770            BX               LR
-  117 00000054         
-  118 00000054         ;×Ó³ÌÐò½áÊø
-  119 00000054                 ENDP
-  120 00000054         
-  121 00000054         ;/*
-  122 00000054         ; *-----------------------------------------------------
+  128 00000058         
+  129 00000058         ;´¥·¢PendSVÒì³££¬ÊµÏÖÉÏÏÂÎÄÇÐ»»
+  130 00000058 4815            LDR              r0, =NVIC_INT_CTRL
+  131 0000005A F04F 5180       LDR              r1, =NVIC_PENDSVSET
+  132 0000005E 6001            STR              r1, [r0]
+  133 00000060         
+  134 00000060         ;×Ó³ÌÐò·µ»Ø
+  135 00000060 4770            BX               LR
+  136 00000062         
+  137 00000062         ;×Ó³ÌÐò½áÊø
+  138 00000062                 ENDP
+  139 00000062         
+  140 00000062         ;/*
+  141 00000062         ; *-----------------------------------------------------
                        --------------------------------------------------------
                        --------------
-  123 00000054         ; *void PendSV_Handler(void)
-  124 00000054         ; *r0 --> switch from thread stack
-  125 00000054         ; *r1 --> swicth to thread stack
-  126 00000054         ; *psr,pc,lr,r12,r3,r2,r1,r0 are pushed into [from] stac
+  142 00000062         ; *void PendSV_Handler(void)
+  143 00000062         ; *r0 --> switch from thread stack
+  144 00000062         ; *r1 --> swicth to thread stack
+  145 00000062         ; *psr,pc,lr,r12,r3,r2,r1,r0 are pushed into [from] stac
                        k
-  127 00000054         ; *-----------------------------------------------------
+  146 00000062         ; *-----------------------------------------------------
                        --------------------------------------------------------
                        --------------
-  128 00000054         ; */
-  129 00000054         PendSV_Handler
+  147 00000062         ; */
+  148 00000062         PendSV_Handler
                                PROC
-  130 00000054                 EXPORT           PendSV_Handler
-  131 00000054         
-  132 00000054         ;Ê§ÄÜÖÐ¶Ï£¬ÎªÁË±£»¤ÉÏÏÂÎÄÇÐ»»²»±»ÖÐ¶Ï
-  133 00000054 F3EF 8210       MRS              r2, PRIMASK
-  134 00000058 B672            CPSID            I
-  135 0000005A         
-  136 0000005A         ;»ñÈ¡ÖÐ¶Ï±êÖ¾Î»£¬¿´¿´ÊÇ·ñÎª0
-  137 0000005A 480F            LDR              r0, =rt_thread_switch_interrupt
-_flag 
-                                                            ;¼ÓÔØrt_thread_swit
-                                                            ch_interrupt_flagµÄ
-                                                            µØÖ·µ½r0
-  138 0000005C 6801            LDR              r1, [r0]    ;¼ÓÔØrt_thread_swit
-                                                            ch_interrupt_flagµÄ
-                                                            Öµµ½r1
-  139 0000005E B191            CBZ              r1, pendsv_exit ;ÅÐ¶Ïr1ÊÇ·ñÎª0£
-                                                            ¬Îª0ÔòÌø×ªµ½pendsv_
-                                                            exit
-  140 00000060         
-  141 00000060         ;r1²»Îª0ÔòÇå0
-  142 00000060 F04F 0100       MOV              r1, #0x00
-  143 00000064 6001            STR              r1, [r0]    ;½«r1µÄÖµ´æ´¢µ½rt_t
-                                                            hread_switch_interr
-                                                            upt_flag,¼´Çå0
-  144 00000066         
-  145 00000066         ;ÅÐ¶Ïrt_interrupt_from_threadµÄÖµÊÇ·ñÎª0
-  146 00000066 480B            LDR              r0, =rt_interrupt_from_thread ;
+  149 00000062                 EXPORT           PendSV_Handler
+  150 00000062         
+  151 00000062         ;Ê§ÄÜÖÐ¶Ï£¬ÎªÁË±£»¤ÉÏÏÂÎÄÇÐ»»²»±»ÖÐ¶Ï
+  152 00000062 F3EF 8210       MRS              r2, PRIMASK
+  153 00000066 B672            CPSID            I
+  154 00000068         
 
 
 
 ARM Macro Assembler    Page 5 
 
 
+  155 00000068         ;»ñÈ¡ÖÐ¶Ï±êÖ¾Î»£¬¿´¿´ÊÇ·ñÎª0
+  156 00000068 480F            LDR              r0, =rt_thread_switch_interrupt
+_flag 
+                                                            ;¼ÓÔØrt_thread_swit
+                                                            ch_interrupt_flagµÄ
+                                                            µØÖ·µ½r0
+  157 0000006A 6801            LDR              r1, [r0]    ;¼ÓÔØrt_thread_swit
+                                                            ch_interrupt_flagµÄ
+                                                            Öµµ½r1
+  158 0000006C B191            CBZ              r1, pendsv_exit ;ÅÐ¶Ïr1ÊÇ·ñÎª0£
+                                                            ¬Îª0ÔòÌø×ªµ½pendsv_
+                                                            exit
+  159 0000006E         
+  160 0000006E         ;r1²»Îª0ÔòÇå0
+  161 0000006E F04F 0100       MOV              r1, #0x00
+  162 00000072 6001            STR              r1, [r0]    ;½«r1µÄÖµ´æ´¢µ½rt_t
+                                                            hread_switch_interr
+                                                            upt_flag,¼´Çå0
+  163 00000074         
+  164 00000074         ;ÅÐ¶Ïrt_interrupt_from_threadµÄÖµÊÇ·ñÎª0
+  165 00000074 480B            LDR              r0, =rt_interrupt_from_thread ;
                                                             ¼ÓÔØrt_interrupt_fr
                                                             om_threadµÄµØÖ·µ½r0
                                                             
-  147 00000068 6801            LDR              r1, [r0]    ;¼ÓÔØrt_interrupt_f
+  166 00000076 6801            LDR              r1, [r0]    ;¼ÓÔØrt_interrupt_f
                                                             rom_threadµÄÖµµ½r1
-  148 0000006A B129            CBZ              r1, switch_to_thread ;ÅÐ¶Ïr1ÊÇ·
+  167 00000078 B129            CBZ              r1, switch_to_thread ;ÅÐ¶Ïr1ÊÇ·
                                                             ñÎª0£¬Îª0ÔòÌø×ªµ½sw
                                                             itch_to_thread
-  149 0000006C         ;µÚÒ»´ÎÏß³ÌÇÐ»»Ê±rt_interrupt_from_thread¿Ï¶¨Îª0£¬ÔòÌø×ª
+  168 0000007A         ;µÚÒ»´ÎÏß³ÌÇÐ»»Ê±rt_interrupt_from_thread¿Ï¶¨Îª0£¬ÔòÌø×ª
                        µ½switch_to_thread
-  150 0000006C         
-  151 0000006C         ; =================================ÉÏÎÄ±£´æ=============
+  169 0000007A         
+  170 0000007A         ; =================================ÉÏÎÄ±£´æ=============
                        ========================================================
                        ====================
-  152 0000006C         ;µ±½øÈëPendSVC HandlerÊ±£¬ÉÏÒ»¸öÏß³ÌÔËÐÐµÄ»·¾³¼´:
-  153 0000006C         ;xPSR,PC(Ïß³ÌÈë¿ÚµØÖ·)£¬R14,R12,R3,R2,R1,R0(Ïß³ÌµÄÐÎ²Î)
-  154 0000006C         ;ÕâÐ©CPU¼Ä´æÆ÷µÄÖµ»á×Ô¶¯±£´æµ½Ïß³ÌµÄÕ»ÖÐ£¬Ê£ÏÂµÄr4~r11Ðè
+  171 0000007A         ;µ±½øÈëPendSVC HandlerÊ±£¬ÉÏÒ»¸öÏß³ÌÔËÐÐµÄ»·¾³¼´:
+  172 0000007A         ;xPSR,PC(Ïß³ÌÈë¿ÚµØÖ·)£¬R14,R12,R3,R2,R1,R0(Ïß³ÌµÄÐÎ²Î)
+  173 0000007A         ;ÕâÐ©CPU¼Ä´æÆ÷µÄÖµ»á×Ô¶¯±£´æµ½Ïß³ÌµÄÕ»ÖÐ£¬Ê£ÏÂµÄr4~r11Ðè
                        ÒªÊÖ¶¯±£´æ
-  155 0000006C         
-  156 0000006C F3EF 8109       MRS              r1,psp      ;»ñÈ¡Ïß³ÌÕ»Ö¸Õëµ½r1
+  174 0000007A         
+  175 0000007A F3EF 8109       MRS              r1,psp      ;»ñÈ¡Ïß³ÌÕ»Ö¸Õëµ½r1
                                                             
-  157 00000070 E921 0FF0       STMFD            r1!,{r4 - r11} ;½«CPU¼Ä´æÆ÷r4~r
+  176 0000007E E921 0FF0       STMFD            r1!,{r4 - r11} ;½«CPU¼Ä´æÆ÷r4~r
                                                             11µÄÖµ´æ´¢µ½r1Ö¸Ïòµ
                                                             ÄµØÖ·(Ã¿²Ù×÷Ò»´ÎµØÖ
                                                             ·½«µÝ¼õÒ»´Î)
-  158 00000074 6800            LDR              r0, [r0]    ;¼ÓÔØr0Ö¸ÏòÖµµ½r0£¬
+  177 00000082 6800            LDR              r0, [r0]    ;¼ÓÔØr0Ö¸ÏòÖµµ½r0£¬
                                                             ¼´r0=rt_interrupt_f
                                                             rom_thread
-  159 00000076 6001            STR              r1, [r0]    ;½«r1µÄÖµ´æ´¢µ½r0,¼
+  178 00000084 6001            STR              r1, [r0]    ;½«r1µÄÖµ´æ´¢µ½r0,¼
                                                             ´¸üÐÂÏß³ÌÕ»sp
-  160 00000078         
-  161 00000078         ; ==================================ÏÂÎÄÇÐ»»============
+  179 00000086         
+  180 00000086         ; ==================================ÏÂÎÄÇÐ»»============
                        ========================================================
                        ====================
-  162 00000078         switch_to_thread
-  163 00000078 4905            LDR              r1, =rt_interrupt_to_thread ;¼Ó
+  181 00000086         switch_to_thread
+  182 00000086 4906            LDR              r1, =rt_interrupt_to_thread ;¼Ó
                                                             ÔØrt_interrupt_to_t
                                                             hreadµÄµØÖ·µ½r1
-  164 0000007A         ;rt_interrupt_to_threadÊÇÒ»¸öÈ«¾Ö±äÁ¿£¬ÀïÃæ´æµÄÊÇÏß³ÌÕ»Ö
-                       ¸ÕëSPµÄÖ¸Õë
-  165 0000007A 6809            LDR              r1, [r1]    ;¼ÓÔØrt_interrupt_t
-                                                            o_threadµÄÖµµ½r1,¼´
-                                                            spÖ¸ÕëµÄÖ¸Õë
-  166 0000007C 6809            LDR              r1, [r1]    ;¼ÓÔØrt_interrupt_t
-                                                            o_threadµÄÖµµ½r1,¼´
-                                                            sp
-  167 0000007E         
-  168 0000007E E8B1 0FF0       LDMFD            r1!, {r4 - r11} ;½«Ïß³ÌÕ»Ö¸Õër1
-                                                            (²Ù×÷Ö®Ç°ÏÈµÝ¼õ)Ö¸Ï
-                                                            òµÄÄÚÈÝ¼ÓÔØµ½CPU¼Ä´
-                                                            æÆ÷r4~r11
-  169 00000082 F381 8809       MSR              psp, r1     ;½«Ïß³ÌÕ»Ö¸Õë¸üÐÂµ½
-                                                            PSP
-  170 00000086         
-  171 00000086         pendsv_exit
-  172 00000086         ;»Ö¸´ÖÐ¶Ï
-  173 00000086 F382 8810       MSR              PRIMASK, r2
-  174 0000008A         
-  175 0000008A F04E 0E04       ORR              lr, lr, #0x04 ;È·±£Òì³£·µ»ØÊ¹ÓÃ
 
 
 
 ARM Macro Assembler    Page 6 
 
 
+  183 00000088         ;rt_interrupt_to_threadÊÇÒ»¸öÈ«¾Ö±äÁ¿£¬ÀïÃæ´æµÄÊÇÏß³ÌÕ»Ö
+                       ¸ÕëSPµÄÖ¸Õë
+  184 00000088 6809            LDR              r1, [r1]    ;¼ÓÔØrt_interrupt_t
+                                                            o_threadµÄÖµµ½r1,¼´
+                                                            spÖ¸ÕëµÄÖ¸Õë
+  185 0000008A 6809            LDR              r1, [r1]    ;¼ÓÔØrt_interrupt_t
+                                                            o_threadµÄÖµµ½r1,¼´
+                                                            sp
+  186 0000008C         
+  187 0000008C E8B1 0FF0       LDMFD            r1!, {r4 - r11} ;½«Ïß³ÌÕ»Ö¸Õër1
+                                                            (²Ù×÷Ö®Ç°ÏÈµÝ¼õ)Ö¸Ï
+                                                            òµÄÄÚÈÝ¼ÓÔØµ½CPU¼Ä´
+                                                            æÆ÷r4~r11
+  188 00000090 F381 8809       MSR              psp, r1     ;½«Ïß³ÌÕ»Ö¸Õë¸üÐÂµ½
+                                                            PSP
+  189 00000094         
+  190 00000094         pendsv_exit
+  191 00000094         ;»Ö¸´ÖÐ¶Ï
+  192 00000094 F382 8810       MSR              PRIMASK, r2
+  193 00000098         
+  194 00000098 F04E 0E04       ORR              lr, lr, #0x04 ;È·±£Òì³£·µ»ØÊ¹ÓÃ
                                                             µÄ¶ÑÕ»Ö¸ÕëÊÇPSP£¬¼´
                                                             LR¼Ä´æÆ÷µÄÎ»2ÒªÎª1
-  176 0000008E 4770            BX               lr          ;Òì³£·µ»Ø£¬Õâ¸öÊ±ºò
+  195 0000009C 4770            BX               lr          ;Òì³£·µ»Ø£¬Õâ¸öÊ±ºò
                                                             ÈÎÎñ¶ÑÕ»ÖÐµÄÊ£ÏÂµÄÄ
                                                             ÚÈÝ½«»á×Ô¶¯¼ÓÔØµ½xP
                                                             SR,PC(ÈÎÎñÈë¿ÚµØÖ·)
                                                             ,R14,R12,R3,R2,R1,R
                                                             0(ÈÎÎñµÄÐÎ²Î)
-  177 00000090         
-  178 00000090         ; PendSV_Handler ×Ó³ÌÐò½áÊø
-  179 00000090                 ENDP
-  180 00000090         
-  181 00000090                 ALIGN            4
-  182 00000090         
-  183 00000090                 END
+  196 0000009E         
+  197 0000009E         ; PendSV_Handler ×Ó³ÌÐò½áÊø
+  198 0000009E                 ENDP
+  199 0000009E         
+  200 0000009E 00 00           ALIGN            4
+  201 000000A0         
+  202 000000A0                 END
               00000000 
               00000000 
               00000000 
@@ -369,55 +390,77 @@ Symbol: .text
    Uses
       None
 Comment: .text unused
-PendSV_Handler 00000054
+PendSV_Handler 00000062
 
 Symbol: PendSV_Handler
    Definitions
-      At line 129 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
+      At line 148 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
    Uses
-      At line 130 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
+      At line 149 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
 Comment: PendSV_Handler used once
-_reswitch 00000046
+_reswitch 00000054
 
 Symbol: _reswitch
    Definitions
-      At line 105 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
+      At line 124 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
    Uses
-      At line 93 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
+      At line 112 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
 Comment: _reswitch used once
-pendsv_exit 00000086
+pendsv_exit 00000094
 
 Symbol: pendsv_exit
    Definitions
-      At line 171 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
+      At line 190 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
    Uses
-      At line 139 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
+      At line 158 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
 Comment: pendsv_exit used once
-rt_hw_context_switch 00000030
+rt_hw_context_switch 0000003E
 
 Symbol: rt_hw_context_switch
    Definitions
-      At line 86 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
+      At line 105 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
    Uses
-      At line 87 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
+      At line 106 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
 Comment: rt_hw_context_switch used once
-rt_hw_context_switch_to 00000000
+rt_hw_context_switch_to 0000000E
 
 Symbol: rt_hw_context_switch_to
    Definitions
-      At line 38 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
+      At line 57 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
    Uses
-      At line 41 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
+      At line 60 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
 Comment: rt_hw_context_switch_to used once
-switch_to_thread 00000078
+rt_hw_interrupt_disable 00000000
+
+Symbol: rt_hw_interrupt_disable
+   Definitions
+      At line 33 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
+   Uses
+      At line 34 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
+Comment: rt_hw_interrupt_disable used once
+rt_hw_interrupt_enable 00000008
+
+Symbol: rt_hw_interrupt_enable
+
+
+
+ARM Macro Assembler    Page 2 Alphabetic symbol ordering
+Relocatable symbols
+
+   Definitions
+      At line 43 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
+   Uses
+      At line 44 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
+Comment: rt_hw_interrupt_enable used once
+switch_to_thread 00000086
 
 Symbol: switch_to_thread
    Definitions
-      At line 162 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
+      At line 181 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
    Uses
-      At line 148 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
+      At line 167 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
 Comment: switch_to_thread used once
-7 symbols
+9 symbols
 
 
 
@@ -430,8 +473,8 @@ Symbol: NVIC_INT_CTRL
    Definitions
       At line 16 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
    Uses
-      At line 65 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
-      At line 111 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
+      At line 84 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
+      At line 130 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
 
 NVIC_PENDSVSET 10000000
 
@@ -439,8 +482,8 @@ Symbol: NVIC_PENDSVSET
    Definitions
       At line 19 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
    Uses
-      At line 66 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
-      At line 112 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
+      At line 85 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
+      At line 131 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
 
 NVIC_PENDSV_PRI 00FF0000
 
@@ -448,7 +491,7 @@ Symbol: NVIC_PENDSV_PRI
    Definitions
       At line 18 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
    Uses
-      At line 59 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
+      At line 78 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
 Comment: NVIC_PENDSV_PRI used once
 NVIC_SYSPRI2 E000ED20
 
@@ -456,7 +499,7 @@ Symbol: NVIC_SYSPRI2
    Definitions
       At line 17 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
    Uses
-      At line 58 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
+      At line 77 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
 Comment: NVIC_SYSPRI2 used once
 SCB_VTOR E000ED08
 
@@ -479,10 +522,10 @@ Symbol: rt_interrupt_from_thread
    Definitions
       At line 5 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
    Uses
-      At line 48 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
-      At line 98 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
-      At line 102 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
-      At line 146 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
+      At line 67 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
+      At line 117 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
+      At line 121 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
+      At line 165 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
 
 rt_interrupt_to_thread 00000000
 
@@ -490,9 +533,9 @@ Symbol: rt_interrupt_to_thread
    Definitions
       At line 6 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
    Uses
-      At line 44 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
-      At line 107 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
-      At line 163 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
+      At line 63 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
+      At line 126 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
+      At line 182 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
 
 rt_thread_switch_interrupt_flag 00000000
 
@@ -500,9 +543,9 @@ Symbol: rt_thread_switch_interrupt_flag
    Definitions
       At line 4 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
    Uses
-      At line 53 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
-      At line 90 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
-      At line 137 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
+      At line 72 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
+      At line 109 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
+      At line 156 in file ..\rtthread\3.0.3\libcpu\arm\cortex-m3\context_rvds.s
 
 3 symbols
-350 symbols in table
+352 symbols in table
