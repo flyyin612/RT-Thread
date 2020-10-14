@@ -49,6 +49,11 @@ rt_hw_context_switch_to 	PROC
 	MOV     r0, #0x0							;配置r0等于0
 	STR     r0, [r1]							;将r0的值存储到rt_thread_switch_interrupt_flag
 	
+	;设置中断标志位rt_thread_switch_interrupt_flag的值为1
+	LDR		r1, =rt_thread_switch_interrupt_flag ;将rt_thread_switch_interrupt_flag的地址加载到r1
+	MOV		r0, #1								 ;配置r0等于1
+	STR     r0, [r1]							 ;将r0的值存储到rt_thread_switch_interrupt_flag
+	
 	;设置PendSV异常的优先级
 	LDR     r0, =NVIC_SYSPRI2
 	LDR     r1, =NVIC_PENDSV_PRI
