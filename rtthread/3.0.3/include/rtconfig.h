@@ -6,4 +6,6 @@
 
 #define RT_NAME_MAX									8				/*内核对象的名字长度*/
 
+#define RT_TICK_PRE_SECOND					100
+
 #endif

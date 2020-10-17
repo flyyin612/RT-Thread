@@ -164,6 +164,8 @@ struct rt_thread
 	void          *parameter;		/*线程形参*/
 	void          *stack_addr;	/*线程起始地址*/
 	rt_uint32_t   stack_size;		/*线程栈大小，单位为字节*/	
+	
+	rt_ubase_t 		remaining_tick;		/*用于实现阻塞延时*/
 };
 typedef struct rt_thread *rt_thread_t;
 
