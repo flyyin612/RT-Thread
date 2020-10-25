@@ -35,7 +35,8 @@ rt_err_t rt_thread_init(struct rt_thread *thread,
 												void (*entry)(void *parameter),
 												void 					*parameter,
 												void          *stack_start,
-												rt_uint32_t 	stack_size);
+												rt_uint32_t 	stack_size,
+												rt_uint8_t    priority);
 												
 rt_err_t rt_thread_resume(rt_thread_t thread);
 												
