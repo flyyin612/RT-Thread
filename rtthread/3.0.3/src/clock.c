@@ -5,6 +5,8 @@ static rt_tick_t rt_tick = 0;
 extern rt_list_t rt_thread_priority_table[RT_THREAD_PRIORITY_MAX];
 extern rt_uint32_t rt_thread_ready_priority_group;
 
+#if 0
+
 void rt_tick_increase(void)
 {
 	rt_ubase_t i;
@@ -50,3 +52,22 @@ void rt_tick_increase(void)
 	rt_schedule();
 }
 
+#else
+void rt_tick_increase(void)
+{
+	/*系统时基计数器加1操作，rt_tick是一个全局变量*/
+	++rt_tick;
+	
+	/*扫描系统定时器列表*/
+	rt_timer_check();
+}
+
+/*
+*该函数用于返回操作系统定时器到现在的当前tick，tick是一个全局变量
+*/
+rt_tick_t rt_tick_get(void)
+{
+	/*return the global tick*/
+	return rt_tick;
+}
+#endif

@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>..\User;..\rtthread\3.0.3\bsp;..\rtthread\3.0.3\components\finsh;..\rtthread\3.0.3\include;..\rtthread\3.0.3\include\libc</IncludePath>
+              <IncludePath>..\User;..\rtthread\3.0.3\bsp;..\rtthread\3.0.3\components\finsh;..\rtthread\3.0.3\include;..\rtthread\3.0.3\include\libc;..\rtthread\3.0.3\src</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -441,6 +441,11 @@
               <FileName>clock.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\rtthread\3.0.3\src\clock.c</FilePath>
+            </File>
+            <File>
+              <FileName>timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\rtthread\3.0.3\src\timer.c</FilePath>
             </File>
           </Files>
         </Group>
